@@ -1,0 +1,99 @@
+div.calendar-head {
+	font-size: 2em;
+	color: #999;
+}
+ul.category-explanation {
+	font-size: 0.4em;
+	list-style-type: none;
+	float: right;
+	width: 86%;
+	position: absolute;
+	top: 5px;
+	left: 400px;
+	opacity: 0.5;
+}
+ul.category-explanation li {
+	float: left;
+	padding: 5px;
+}
+/* styles for the calendar using the ol/li tags */
+ol li {
+	font-size: 1.1em;
+	padding: 3px 0px 0px 10px;
+	border-top: 1px solid rgb(41,41,41);
+	color: grey;
+}
+/* styles for the calendar using table */
+table.lines-one-month-table {
+	width: 100%;
+	font-size: 1.05em;
+	border-collapse: collapse;
+	color: #555;
+}
+table.lines-one-month-table tr {
+	border-bottom: 1px solid #333;
+}
+table.lines-one-month-table td {
+	padding: 3px;
+}
+.today-0 {
+	font-size: 1.3em;
+	border-left: 1px dotted grey;
+	border-right: 1px dotted grey;
+	background-color: #404040;
+	color: #4caf50 !important;
+	padding-left: 10px;
+}
+.today-3 {
+	font-size: 1.15em;
+}
+.today-2 {
+	font-size: 1.2em;
+}
+.today-1 {
+	font-size: 1.25em;
+}
+.weekend {
+	color: #963232;
+}
+div.names {
+	float: right;
+}
+div.category-bubble {
+	float: right;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	position: relative;
+	right: 10px;
+	margin-right: 5px;
+}
+.names sub {
+	font-family: "Courier";
+	font-size: 0.7em !important;
+	line-height: 0;
+	position: relative;
+	vertical-align: baseline;
+}
+span.subject {
+	font-size: 1.0em !important;
+	padding: 0px 3px 0px 3px;
+	position: relative;
+	left: 15px;
+	border: 0px solid white;
+	color: #777;
+	background-color: black;
+}
+div#wait {
+  padding: 100px 0;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  margin: 0 auto;
+  opacity: 0.7;
+  z-index: 999;
+  text-align: center;
+  vertical-align: middle;
+  color: black;
+}

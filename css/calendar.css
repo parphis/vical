@@ -1,0 +1,16 @@
+* {
+	margin:0;
+	padding:0;
+}
+body {
+	font-size: 100.01%;
+	font-family: Georgia, serif !important;
+	background-color: black;
+	color: white;
+}
+a.category_anchors {
+	text-decoration: none;
+}
+div#categories_list ul li {
+	border-bottom: 1px solid white;
+}

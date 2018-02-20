@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <title>ViCal</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./css/w3.css">
+    <link rel="stylesheet" type="text/css" href="./css/weather.css">
+    <link rel="stylesheet" type="text/css" href="./css/calendar.css">
+    <link rel="stylesheet" type="text/css" href="./css/lines_one_month.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      var refresh_interval=5000;
+      var t;
+      var auto_paging = false;
+      var timerFunction = function() {
+        $.ajax({
+          url: 'cal.pl',
+          method: 'GET',
+          beforeSend: function() {
+            auto_paging = true;
+            //$('#div1').html('');
+          }
+        })
+        .done(function(result) {
+          let pairs = result.split('#');
+          refresh_interval = parseInt(pairs[0]);
+          t = setTimeout(timerFunction, refresh_interval);
+          $('#div1').html(pairs[1]);
+        })
+        .fail(function(xhr) {
+          console.log('Error getting next widget', xhr);
+          t = setTimeout(timerFunction, refresh_interval);
+        });
+      }
+      function stepCalendar(params) {
+        $.ajax({
+          url: 'StepCalendar.pl',
+          method: 'POST',
+          data: params,
+          beforeSend: function() {
+            $("#wait").css("display", 'block');
+          }
+        })
+        .done(function(result) {
+          $("#wait").css("display", 'none');
+          $('#div1').html(result);
+        })
+        .fail(function(xhr) {
+          $("#wait").css("display", 'none');
+          console.log('Error stepping calendar', xhr);
+        });
+      }
+      $(document).ready(function() {
+        $("#wait").css("display", 'none');
+        setTimeout(timerFunction, refresh_interval);
+
+        $(document).keydown( function(event) {
+          // do nothing if event already handled
+          if (event.preventDefaulted) {
+            return;
+          }
+          console.log('key pressed', event.which);
+          switch(event.keyCode) {
+            // char `e`: stop the auto-paging function
+            case 69:
+              if(auto_paging) {
+                clearTimeout(t);
+              }
+              auto_paging = false;
+              break;
+            // char `s`: start the auto-paging function
+            case 83:
+              if(!auto_paging) {
+                setTimeout(timerFunction, refresh_interval);
+              }
+              auto_paging = true;
+              break;
+            // char 'up-arrow': stape back the date by one day on the calendar
+            case 38:
+              if(!auto_paging) {
+                stepCalendar("direction=add&amount=1&unit=days");
+              }
+              break;
+            // char 'down-arrow': step forward the date by one day on the calendar
+            case 40:
+              if(!auto_paging) {
+                stepCalendar("direction=subtract&amount=1&unit=days");
+              }
+              break;
+            // char 't': going to today on the calendar
+            case 84:
+              if(!auto_paging) {
+                stepCalendar("direction=subtract&amount=0&unit=days");
+              }
+              break;
+            // char 'left-arrow': step date by one month backward on the calendar
+            case 37:
+              if(!auto_paging) {
+                stepCalendar("direction=subtract&amount=1&unit=months");
+              }
+              break;
+            // char 'right-arrow': step date by one month forward on the calendar
+            case 39:
+              if(!auto_paging) {
+                stepCalendar("direction=add&amount=1&unit=months");
+              }
+              break;
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div id="wait" style="display:none">Pillanat...</div>
+    <div id="div1"></div>
+  </body>
+</html>
