@@ -32,9 +32,9 @@ sub renderLayout {
   my $self = shift;
   my $t = time();
   return qq(<div class="weather">
-	            <img src="http://wx.fallingrain.com/wx.cgi?lat=47.3932&long=18.4604&name-Csakvar&what=TMP&a=$t"></img>
-              <img src="http://wx.fallingrain.com/wx.cgi?lat=47.3932&long=18.4604&name-Csakvar&what=PCP&a=$t"></img>
-              <img src="http://wx.fallingrain.com/wx.cgi?lat=47.3932&long=18.4604&name-Csakvar&what=CLD&a=$t"></img>
+	            <img src="http://wx.fallingrain.com/wx2.cgi?lat=47.3932&long=18.4604&name-Csakvar&what=TMP&a=$t"></img>
+              <img src="http://wx.fallingrain.com/wx2.cgi?lat=47.3932&long=18.4604&name-Csakvar&what=PCP&a=$t"></img>
+              <img src="http://wx.fallingrain.com/wx2.cgi?lat=47.3932&long=18.4604&name-Csakvar&what=CLD&a=$t"></img>
             </div>);
 }
 1;

@@ -7,6 +7,7 @@ use DateTime::Format::Strptime;
 use XML::Simple;
 $XML::Simple::PREFERRED_PARSER = 'XML::Parser';
 use Storable;
+use utf8;
 use Options;
 use Data::Dumper;
 
@@ -32,6 +33,10 @@ sub new {
     10 => 'október',
     11 => 'november',
     12 => 'december'
+  };
+  $self->{_precip_trans} = {
+    'snow' => 'HÓ',
+    'rain' => 'ESŐ'
   };
 
   bless $self, $class;
@@ -71,7 +76,9 @@ sub renderLayout {
   my @details = @{$time{'time'}};
   #print Dumper(@details);
 
-  my $html = "<div id='ow-cards' class='w3-container'>";
+  my $html = "<div id='ow-cards' class='w3-container' style='font-family:Arial !important;'>";
+  my $max = 25;
+  my $i = 0;
 
   foreach my $el (@details) {
     my %parts = %{$el};
@@ -79,33 +86,33 @@ sub renderLayout {
     my $dt = $formatter->parse_datetime($parts{'from'});
     my %pressure = %{$parts{'pressure'}};
     
-    my $date = $self->{_month_list}{$dt->month()}." ".$dt->strftime("%d");
+    $dt->set_locale('hu_HU');
+    my $date = $self->{_month_list}{$dt->month()}." ".$dt->strftime("%d")." ".$dt->day_name;
     my $icon = %{$parts{'symbol'}}{'var'};
-    my $hour = $dt->strftime("%H:%M:%S");
-    my $temp = %{$parts{'temperature'}}{'value'};
+    my $hour = $dt->strftime("%H:%M");
+    my $temp = %{$parts{'temperature'}}{'value'}."°C";
     my $wind_speed = %{$parts{'windSpeed'}}{'mps'}."m/s";
-    my $wind_type = %{$parts{'windSpeed'}}{'name'};
-    my $wind_dir = %{$parts{'windDirection'}}{'name'};
+    #my $wind_type = %{$parts{'windSpeed'}}{'name'};
+    #my $wind_dir = %{$parts{'windDirection'}}{'name'};
     my $cloud = %{$parts{'clouds'}}{'all'}.%{$parts{'clouds'}}{'unit'};
-    my $precip_type = %{$parts{'precipitation'}}{'type'};
-    my $precip_value = %{$parts{'precipitation'}}{'value'}."mm";
+    my $precip_type = $self->{_precip_trans}{%{$parts{'precipitation'}}{'type'}};
+    my $pv = %{$parts{'precipitation'}}{'value'};
+    $pv *= 1000;
+    my $precip_value = ($pv)?sprintf("%d", $pv):"-";
     my $humidity = %{$parts{'humidity'}}{'value'}.%{$parts{'humidity'}}{'unit'};
     my $pressure = %{$parts{'pressure'}}{'value'}.%{$parts{'pressure'}}{'unit'};
 
-    $html .= "<div class='w3-card'>";
-    $html .= "<header class='w3-container'><h3>$date</h3><img src='http://openweathermap.org/img/w/$icon.png' alt='$icon'/></header>";
-    $html .= "<div class='w3-container'>";
-    $html .= "<span>$hour</span>";
-    $html .= "<span>$temp</span>";
-    $html .= "<span>$wind_speed</span>";
-    $html .= "<span>$wind_type</span>";
-    $html .= "<span>$wind_dir</span>";
-    $html .= "<span>$cloud</span>";
-    $html .= "<span>$precip_type</span>";
-    $html .= "<span>$precip_value</span>";
-    $html .= "<span>$humidity</span>";
-    $html .= "<span>$pressure</span>";
-    $html .= "</div></div>";
+    $html .= "<div class='w3-card w3-text-black' style='width:20% !important;height:200px !important;float:left;'>";
+    $html .= "<header class='w3-container' style='text-align:right;position:relative;'><h5>$date</h5><img src='http://openweathermap.org/img/w/$icon.png' alt='$icon' style='width:64px;height:64px;position:absolute;top:0px;left:0px;'/>$hour</header>";
+    $html .= "<div class='w3-panel'><img src='images/thermometer.svg' style='width:16px;height:16px;' /> $temp <img src='images/cloud-rain.svg' style='width:16px;height:16px;' /> $precip_type $precip_value</div>";
+    $html .= "<div class='w3-panel'><img src='images/wind.svg' style='width:16px;height:16px;' /> $wind_speed</div>";
+    $html .= "<div class='w3-panel'><img src='images/cloud.svg' style='width:16px;height:16px;' /> $cloud <img src='images/droplet.svg' style='width:16px;height:16px;' /> $humidity</div>";
+    #$html .= "<div class='w3-panel'><img src='images/droplet.svg' style='width:16px;height:16px;' />$humidity</div>";
+    #$html .= "<div class='w3-panel'><img src='images/target.svg' style='width:16px;height:16px;' />$pressure</div>";
+    $html .= "</div>";
+
+    $i++;
+    last if($i==$max);
   }
 
   $html .= "</div>";
@@ -113,6 +120,6 @@ sub renderLayout {
   return qq(<div class="weather">$html</div>);
 }
 1;
-my $ow = OpenWeather->new;
-my $res = $ow->renderLayout;
-print $res;
+#my $ow = OpenWeather->new;
+#my $res = $ow->renderLayout;
+#print $res;
