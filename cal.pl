@@ -9,6 +9,7 @@ use Calendar;
 use Weather;
 use OrigoTudomany;
 use OpenWeather;
+use MetWeather;
 
 # Get the program settings from .vical. Create one if it does not exist.
 my %settings = Options::load_settings('.vical', 
